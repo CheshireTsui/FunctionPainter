@@ -32,7 +32,7 @@ for i in range(0,WIDTH,edge):
     adjust = 0
     if num < 0: adjust += 3
     if abs(num) >= 10: adjust += 3
-    draw.text((edge+i-adjust,edge+HEIGHT+7), str(num), font=font_label, fill=(0,0,0))
+    draw.text((edge+i-adjust,edge+HEIGHT+7), '%.1f'%num, font=font_label, fill=(0,0,0))
     if SUBLINE:
         for j in range(HEIGHT):
             if i > 0:
