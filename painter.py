@@ -32,7 +32,7 @@ for i in range(0,WIDTH,edge):
     adjust = 0
     if num < 0: adjust += 3
     if abs(num) >= 10: adjust += 3
-    draw.text((edge+i-adjust,edge+HEIGHT+7), str(num), font=font_label, fill=(0,0,0))
+    draw.text((edge+i-adjust,edge+HEIGHT+7), '%.1f'%num, font=font_label, fill=(0,0,0))
     if SUBLINE:
         for j in range(HEIGHT):
             if i > 0:
@@ -58,22 +58,31 @@ draw.text((edge+WIDTH-len(msg)*6+18,edge+HEIGHT-12*1.4), msg, font=font_label, f
 for i in range(1,16):
     draw.line([(edge-4+i/4,edge-i-1), (edge+4-i/4,edge-i-1)],fill=(0,0,0))
 #Draw all functions
-for func, color in FUNCTION_LIST:
+for func, color, disperse in FUNCTION_LIST:
+    former_point = None
     for i in range(WIDTH):
         y = func(X_AXIS_RANGE[0]+ratio_x*i)
+        if not disperse:
+            if former_point:
+                if (y>=Y_AXIS_RANGE[0])and(y<=Y_AXIS_RANGE[1]):
+                    draw.line([former_point, (edge+i, edge+HEIGHT-int((y-Y_AXIS_RANGE[0])/ratio_y))],fill=color)
+            if y:
+                former_point = (edge+i, edge+HEIGHT-int((y-Y_AXIS_RANGE[0])/ratio_y))
+            else: former_point = None 
+
         if (y>=Y_AXIS_RANGE[0])and(y<=Y_AXIS_RANGE[1]):
             mypoint(edge+i, edge+HEIGHT-int((y-Y_AXIS_RANGE[0])/ratio_y), color = color)
 
 #Draw the legend
 legend_height = len(FUNCTION_LIST)*12*1.5
 legend_width = 0
-for func, color in FUNCTION_LIST:
+for func, color, disperse in FUNCTION_LIST:
     if len(func.func_doc)*6 > legend_width: 
         legend_width = len(func.func_doc)*6
 legend_width += 9+edge
 draw.rectangle([(edge+WIDTH,edge),(edge+WIDTH-legend_width,edge+legend_height)],fill=(150,150,150))
 head =0.1
-for func, color in FUNCTION_LIST:
+for func, color, disperse in FUNCTION_LIST:
     draw.line([(edge+WIDTH-legend_width+3,edge+6*1.5+head), (2*edge+WIDTH-legend_width+3,edge+6*1.5+head)],fill = color)
     draw.text((2*edge+WIDTH-legend_width+6,edge+head+2), func.func_doc, font = font_label, fill = (0,0,0))
     head +=12*1.5
